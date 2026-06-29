@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Hana & Ahmed — Share a Memory</title>
+<style>
+
+
+  :root {
+    --cream: #F5F0E8;
+    --sage: #8A9E85;
+    --sage-light: #C8D5C5;
+    --sage-dark: #5C7A57;
+    --brown: #7A5C3F;
+    --brown-light: #C4A882;
+    --beige: #E8DDD0;
+    --beige-dark: #D4C4B0;
+    --white: #FDFAF6;
+    --text-dark: #3A2E25;
+    --text-mid: #6B5C4E;
+    --text-light: #9E8E80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Floral decorations */
+  .floral-top {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--sage-light), var(--brown-light), var(--sage-light), var(--beige-dark), var(--sage-light));
+    z-index: 100;
+  }
+
+  /* Screens */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── LANDING ── */
+  #screen-landing {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #screen-landing::before {
+    content: '';
+    position: absolute;
+    top: -120px; left: -120px;
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--sage-light) 0%, transparent 70%);
+    opacity: 0.35;
+  }
+
+  #screen-landing::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--brown-light) 0%, transparent 70%);
+    opacity: 0.25;
+  }
+
+  .landing-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 360px;
+  }
+
+  .leaf-divider {
+    font-size: 22px;
+    letter-spacing: 8px;
+    color: var(--sage);
+    margin-bottom: 1.2rem;
+  }
+
+  .landing-eyebrow {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    margin-bottom: 1rem;
+  }
+
+  .landing-names {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 58px;
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .landing-ampersand {
+    font-style: italic;
+    color: var(--brown);
+  }
+
+  .landing-date {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: var(--text-mid);
+    margin-bottom: 2.5rem;
+  }
+
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .ornament-line {
+    height: 1px;
+    width: 60px;
+    background: var(--beige-dark);
+  }
+
+  .ornament-diamond {
+    width: 6px; height: 6px;
+    background: var(--brown-light);
+    transform: rotate(45deg);
+  }
+
+  .landing-subtitle {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sage-dark);
+    color: var(--white);
+    border: none;
+    border-radius: 2px;
+    padding: 14px 36px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .btn-primary:active { transform: scale(0.98); background: var(--sage); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text-mid);
+    border: 1px solid var(--beige-dark);
+    border-radius: 2px;
+    padding: 13px 36px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-secondary:active { background: var(--beige); }
+
+  /* ── CAMERA ── */
+  #screen-camera {
+    background: #1a1410;
+    position: relative;
+  }
+
+  #video-preview {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
+  }
+
+  .camera-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem 2rem 3rem;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .camera-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: all;
+  }
+
+  .camera-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 1px;
+  }
+
+  .camera-title span {
+    font-style: italic;
+    color: var(--brown-light);
+  }
+
+  .btn-icon {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    backdrop-filter: blur(4px);
+    pointer-events: all;
+    transition: background 0.2s;
+  }
+
+  .btn-icon:active { background: rgba(255,255,255,0.3); }
+
+  .camera-viewfinder {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 240px; height: 240px;
+    pointer-events: none;
+  }
+
+  .corner {
+    position: absolute;
+    width: 24px; height: 24px;
+    border-color: rgba(255,255,255,0.6);
+    border-style: solid;
+  }
+
+  .corner-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+  .corner-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+  .corner-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+  .corner-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+  .camera-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: all;
+  }
+
+  .shutter-btn {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    border: 3px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: transform 0.1s, background 0.1s;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .shutter-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,0.15);
+  }
+
+  .shutter-btn:active { transform: scale(0.93); background: var(--beige); }
+
+  .flip-btn {
+    width: 44px; height: 44px;
+  }
+
+  .gallery-thumb-btn {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+  }
+
+  #gallery-thumb-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  /* ── PREVIEW ── */
+  #screen-preview {
+    background: #1a1410;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4rem 2rem 3rem;
+  }
+
+  #preview-image {
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+
+  .preview-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+
+  .btn-retake {
+    flex: 1;
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 2px;
+    padding: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-retake:active { background: rgba(255,255,255,0.1); }
+
+  .btn-upload {
+    flex: 2;
+    background: var(--sage-dark);
+    color: white;
+    border: none;
+    border-radius: 2px;
+    padding: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-upload:active { transform: scale(0.98); }
+  .btn-upload:disabled { background: var(--text-light); cursor: not-allowed; }
+
+  /* ── UPLOADING ── */
+  .upload-progress {
+    width: 100%;
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--sage-light);
+    border-radius: 1px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+
+  .upload-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  /* ── SUCCESS ── */
+  #screen-success {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--cream);
+  }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--sage-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    font-size: 28px;
+    color: var(--sage-dark);
+  }
+
+  .success-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+  }
+
+  .success-subtitle {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 280px;
+  }
+
+  /* ── GALLERY ── */
+  #screen-gallery {
+    background: var(--cream);
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .gallery-header {
+    padding: 3rem 1.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--beige-dark);
+  }
+
+  .gallery-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .gallery-count {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    font-weight: 400;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px;
+    flex: 1;
+  }
+
+  .gallery-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--beige);
+    cursor: pointer;
+  }
+
+  .gallery-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+
+  .gallery-item:active img { transform: scale(1.05); }
+
+  .gallery-empty {
+    grid-column: 1 / -1;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .gallery-empty-icon {
+    font-size: 48px;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+
+  .gallery-empty-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--text-light);
+  }
+
+  .gallery-nav {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--beige-dark);
+    display: flex;
+    gap: 10px;
+  }
+
+  /* ── SETUP NOTICE ── */
+  .setup-banner {
+    background: var(--beige);
+    border: 1px solid var(--beige-dark);
+    border-radius: 2px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .setup-banner-title {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--brown);
+    margin-bottom: 0.5rem;
+  }
+
+  .setup-banner-text {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .setup-banner code {
+    font-size: 11px;
+    background: rgba(0,0,0,0.07);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-family: monospace;
+    color: var(--brown);
+  }
+
+  /* ── LIGHTBOX ── */
+  #lightbox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(26, 20, 16, 0.95);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  #lightbox.open { display: flex; }
+
+  #lightbox img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+
+  #lightbox-close {
+    position: fixed;
+    top: 1.5rem; right: 1.5rem;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text-dark);
+    color: var(--cream);
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    z-index: 999;
+    transition: transform 0.3s;
+    white-space: nowrap;
+  }
+
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* canvas (hidden, for processing) */
+  canvas { display: none; }
+</style>
+</head>
+<body>
+
+<div class="floral-top"></div>
+<canvas id="processing-canvas"></canvas>
+
+<!-- ── LANDING ── -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-inner">
+    <div class="leaf-divider">✦ ✦ ✦</div>
+    <div class="landing-eyebrow">You're invited to share</div>
+    <div class="landing-names">
+      Hana<br><span class="landing-ampersand">&</span><br>Ahmed
+    </div>
+    <div class="landing-date">A day to remember</div>
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+
+    <p class="landing-subtitle">
+      Capture a moment from today and add it to our shared wedding album.
+    </p>
+
+    <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <button class="btn-primary" onclick="startCamera()">
+        📷 &nbsp;Take a photo
+      </button>
+      <button class="btn-secondary" onclick="showGallery()">
+        View the album
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CAMERA ── -->
+<div id="screen-camera" class="screen">
+  <video id="video-preview" autoplay playsinline muted></video>
+  <div class="camera-overlay">
+    <div class="camera-header">
+      <div class="camera-title">Hana <span>&</span> Ahmed</div>
+      <button class="btn-icon" onclick="showScreen('screen-landing')">✕</button>
+    </div>
+
+    <div class="camera-viewfinder">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+    </div>
+
+    <div class="camera-footer">
+      <div class="gallery-thumb-btn" onclick="showGallery()">
+        <img id="gallery-thumb-img" alt="">
+        <span id="gallery-thumb-icon">🖼</span>
+      </div>
+      <button class="shutter-btn" onclick="capturePhoto()"></button>
+      <button class="btn-icon flip-btn" onclick="flipCamera()" title="Flip camera">⟳</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PREVIEW ── -->
+<div id="screen-preview" class="screen">
+  <img id="preview-image" alt="Your photo">
+  <div style="width:100%">
+    <div class="preview-actions">
+      <button class="btn-retake" onclick="retakePhoto()">Retake</button>
+      <button class="btn-upload" id="upload-btn" onclick="uploadPhoto()">
+        <span id="upload-btn-text">✓ &nbsp;Use this photo</span>
+      </button>
+    </div>
+    <div class="upload-progress" id="upload-progress">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="upload-label" id="upload-label">Uploading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUCCESS ── -->
+<div id="screen-success" class="screen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Thank you!</div>
+  <p class="success-subtitle">Your memory has been added to Hana & Ahmed's wedding album.</p>
+  <div class="ornament" style="margin-bottom:2rem">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line"></div>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:12px; width:100%; max-width:360px;">
+    <button class="btn-primary" onclick="startCamera()">Take another photo</button>
+    <button class="btn-secondary" onclick="showGallery()">View the album</button>
+  </div>
+</div>
+
+<!-- ── GALLERY ── -->
+<div id="screen-gallery" class="screen">
+  <div class="gallery-header">
+    <div class="gallery-title">Our Album</div>
+    <div class="gallery-count" id="gallery-count">Loading...</div>
+  </div>
+  <div class="gallery-grid" id="gallery-grid">
+    <div class="gallery-empty">
+      <div class="gallery-empty-icon">📷</div>
+      <div class="gallery-empty-text">Photos will appear here</div>
+    </div>
+  </div>
+  <div class="gallery-nav">
+    <button class="btn-secondary" onclick="showScreen('screen-landing')" style="flex:1">← Back</button>
+    <button class="btn-primary" onclick="startCamera()" style="flex:2">Take a photo</button>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  CONFIG — replace with your Cloudflare Worker URL
+// ══════════════════════════════════════════════════
+const WORKER_URL = 'https://wedding-photos-worker.yarashoukri.workers.dev';
+
+// Compression settings (balanced preset)
+const COMPRESS_MAX_PX = 1200;
+const COMPRESS_QUALITY = 0.80;
+
+// ══════════════════════════════════════════════════
+let stream = null;
+let facingMode = 'environment'; // rear camera first
+let capturedBlob = null;
+
+// ── Screen management ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── Camera ──
+async function startCamera() {
+  showScreen('screen-camera');
+  await initCamera();
+}
+
+async function initCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    document.getElementById('video-preview').srcObject = stream;
+  } catch (err) {
+    showToast('Camera access denied. Please allow camera access.');
+    showScreen('screen-landing');
+  }
+}
+
+async function flipCamera() {
+  facingMode = facingMode === 'environment' ? 'user' : 'environment';
+  await initCamera();
+}
+
+function capturePhoto() {
+  const video = document.getElementById('video-preview');
+  const canvas = document.getElementById('processing-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Original dimensions
+  let w = video.videoWidth;
+  let h = video.videoHeight;
+
+  // Resize if too large
+  if (w > COMPRESS_MAX_PX || h > COMPRESS_MAX_PX) {
+    const ratio = Math.min(COMPRESS_MAX_PX / w, COMPRESS_MAX_PX / h);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+  }
+
+  canvas.width = w;
+  canvas.height = h;
+
+  // Flip if front camera
+  if (facingMode === 'user') {
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.scale(-1, 1);
+  }
+
+  ctx.drawImage(video, 0, 0, w, h);
+  if (facingMode === 'user') ctx.restore();
+
+  canvas.toBlob(blob => {
+    capturedBlob = blob;
+    const url = URL.createObjectURL(blob);
+    document.getElementById('preview-image').src = url;
+
+    // Update gallery thumb
+    const thumbImg = document.getElementById('gallery-thumb-img');
+    thumbImg.src = url;
+    thumbImg.style.display = 'block';
+    document.getElementById('gallery-thumb-icon').style.display = 'none';
+
+    // Stop camera
+    if (stream) stream.getTracks().forEach(t => t.stop());
+
+    showScreen('screen-preview');
+  }, 'image/jpeg', COMPRESS_QUALITY);
+}
+
+function retakePhoto() {
+  capturedBlob = null;
+  startCamera();
+}
+
+// ── Upload ──
+async function uploadPhoto() {
+  if (!capturedBlob) return;
+
+  const btn = document.getElementById('upload-btn');
+  const progressEl = document.getElementById('upload-progress');
+  const fillEl = document.getElementById('progress-fill');
+  const labelEl = document.getElementById('upload-label');
+  const btnText = document.getElementById('upload-btn-text');
+
+  btn.disabled = true;
+  btnText.textContent = 'Uploading...';
+  progressEl.style.display = 'block';
+  fillEl.style.width = '0%';
+
+  // Simulate progress while uploading
+  let prog = 0;
+  const ticker = setInterval(() => {
+    prog = Math.min(prog + Math.random() * 15, 90);
+    fillEl.style.width = prog + '%';
+  }, 200);
+
+  try {
+    const filename = `wedding_${Date.now()}_${Math.random().toString(36).slice(2,7)}.jpg`;
+
+    // Demo mode: if worker URL not set, save locally and pretend
+    if (WORKER_URL === 'YOUR_R2_WORKER_URL') {
+      await new Promise(r => setTimeout(r, 1800)); // simulate delay
+      savePhotoLocally(capturedBlob, filename);
+    } else {
+      const formData = new FormData();
+      formData.append('file', capturedBlob, filename);
+      const res = await fetch(`${WORKER_URL}/upload`, { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('Upload failed');
+    }
+
+    clearInterval(ticker);
+    fillEl.style.width = '100%';
+    labelEl.textContent = 'Saved!';
+    await new Promise(r => setTimeout(r, 400));
+
+    showScreen('screen-success');
+  } catch (err) {
+    clearInterval(ticker);
+    progressEl.style.display = 'none';
+    btn.disabled = false;
+    btnText.textContent = '✓  Use this photo';
+    showToast('Upload failed — please try again.');
+  }
+}
+
+// ── Local storage fallback (demo mode) ──
+function savePhotoLocally(blob, filename) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const photos = getLocalPhotos();
+    photos.unshift({ filename, src: e.target.result, ts: Date.now() });
+    if (photos.length > 60) photos.splice(60);
+    localStorage.setItem('wedding_photos', JSON.stringify(photos));
+  };
+  reader.readAsDataURL(blob);
+}
+
+function getLocalPhotos() {
+  try { return JSON.parse(localStorage.getItem('wedding_photos') || '[]'); } catch { return []; }
+}
+
+// ── Gallery ──
+async function showGallery() {
+  showScreen('screen-gallery');
+  loadGallery();
+}
+
+async function loadGallery() {
+  const grid = document.getElementById('gallery-grid');
+  const countEl = document.getElementById('gallery-count');
+
+  let photos = [];
+
+  if (WORKER_URL === 'YOUR_R2_WORKER_URL') {
+    // Demo mode: use local storage
+    photos = getLocalPhotos();
+  } else {
+    try {
+      const res = await fetch(`${WORKER_URL}/list`);
+      photos = await res.json();
+    } catch {
+      showToast('Could not load gallery');
+    }
+  }
+
+  countEl.textContent = photos.length === 1 ? '1 memory' : `${photos.length} memories`;
+
+  if (photos.length === 0) {
+    grid.innerHTML = `
+      <div class="gallery-empty">
+        <div class="gallery-empty-icon">📷</div>
+        <div class="gallery-empty-text">Be the first to share a memory</div>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = photos.map((p, i) => `
+    <div class="gallery-item" onclick="openLightbox('${p.src || `${WORKER_URL}/photo/${p.filename}`}')">
+      <img src="${p.src || `${WORKER_URL}/photo/${p.filename}`}" loading="lazy" alt="Wedding memory ${i+1}">
+    </div>
+  `).join('');
+}
+
+// ── Lightbox ──
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightbox-img').src = '';
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Close lightbox on background tap
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+</script>
+</body>
+</html>
