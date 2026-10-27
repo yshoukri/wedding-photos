@@ -852,6 +852,7 @@ function capturePhoto() {
     // Stop camera
     if (stream) stream.getTracks().forEach(t => t.stop());
 
+    resetUploadUI();
     showScreen('screen-preview');
   }, 'image/jpeg', COMPRESS_QUALITY);
 }
@@ -859,6 +860,15 @@ function capturePhoto() {
 function retakePhoto() {
   capturedBlob = null;
   startCamera();
+}
+
+// Put the "Use this photo" button back to normal for each new photo
+function resetUploadUI() {
+  document.getElementById('upload-btn').disabled = false;
+  document.getElementById('upload-btn-text').innerHTML = '✓ &nbsp;Use this photo';
+  document.getElementById('upload-progress').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('upload-label').textContent = 'Uploading...';
 }
 
 // ── Upload ──
