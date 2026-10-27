@@ -338,13 +338,19 @@
   #screen-preview {
     background: #1a1410;
     align-items: center;
-    justify-content: space-between;
-    padding: 4rem 2rem 3rem;
+    justify-content: flex-start;
+    gap: 1rem;
+    height: 100vh;
+    height: 100dvh;           /* actual visible height on phones (excludes browser bars) */
+    min-height: 0;
+    padding: 1.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
   }
 
+  /* Photo takes whatever space is left, so the buttons are always on screen */
   #preview-image {
+    flex: 1;
+    min-height: 0;
     width: 100%;
-    max-height: 65vh;
     object-fit: contain;
     border-radius: 2px;
   }
@@ -353,7 +359,7 @@
     display: flex;
     gap: 12px;
     width: 100%;
-    margin-top: 1.5rem;
+    margin-top: 0;
   }
 
   .btn-retake {
